@@ -1,5 +1,7 @@
+import GoProductsButton from '@/components/GoProductsButton';
 import { getProduct, getProducts } from '@/service/products';
-import { notFound } from 'next/navigation';
+import Image from 'next/image';
+import { notFound, redirect } from 'next/navigation';
 
 export const revalidate = 3;
 
@@ -18,9 +20,21 @@ export function generateMetadata({ params }: Props) {
 export default async function ProductPage({ params: { slug } }: Props) {
   const product = await getProduct(slug);
   if (!product) {
-    notFound();
+    redirect('/products');
+    // notFound();
   }
-  return <h1>{product.name} 제품설명</h1>;
+  return (
+    <>
+      <h1>{product.name} 제품설명</h1>
+      <Image
+        src={`/images/${product.image}`}
+        alt={product.name}
+        width='300'
+        height='300'
+      />
+      <GoProductsButton />
+    </>
+  );
 }
 
 export async function generateStaticParams() {
